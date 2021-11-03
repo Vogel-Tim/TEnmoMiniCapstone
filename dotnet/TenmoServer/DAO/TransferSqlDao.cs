@@ -70,7 +70,7 @@ namespace TenmoServer.DAO
         //    }
         //}
 
-        public bool Create(int typeId, int statusId, int accountFrom, int accountTo, decimal amount)
+        public Transfer Create(Transfer transfer)
         {
            
             try
@@ -82,25 +82,70 @@ namespace TenmoServer.DAO
                     string insertStatement = "INSERT INTO transfers(transfer_type_id, transfer_status_id, account_from, account_to, amount) " +
                                              "VALUES(@transfer_type_id, @transfer_status_id, @account_from, @account_to, @amount);";
                     SqlCommand sqlCmd = new SqlCommand(insertStatement, sqlConn);
-                    sqlCmd.Parameters.AddWithValue("@transfer_type_id", typeId);
-                    sqlCmd.Parameters.AddWithValue("@transfer_status_id", statusId);
-                    sqlCmd.Parameters.AddWithValue("@account_from", accountFrom);
-                    sqlCmd.Parameters.AddWithValue("@acount_to", accountTo);
-                    sqlCmd.Parameters.AddWithValue("@amount", amount);
+                    sqlCmd.Parameters.AddWithValue("@transfer_type_id", transfer.TypeId);
+                    sqlCmd.Parameters.AddWithValue("@transfer_status_id", transfer.StatusId);
+                    sqlCmd.Parameters.AddWithValue("@account_from", transfer.AccountFrom);
+                    sqlCmd.Parameters.AddWithValue("@account_to", transfer.AccountTo);
+                    sqlCmd.Parameters.AddWithValue("@amount", transfer.Amount);
 
-                    int rowAffected = sqlCmd.ExecuteNonQuery();
+                    sqlCmd.ExecuteNonQuery();
                     sqlCmd = new SqlCommand("SELECT @@IDENTITY", sqlConn);
                     int newId = Convert.ToInt32(sqlCmd.ExecuteScalar());
+                    transfer.Id = newId;
 
-                    return (rowAffected > 0);
+                    return transfer;
                 }
             }
             catch (Exception)
             {
                 throw;
-            }
-           
+            }           
         }
+
+        public bool Send(Transfer transfer)
+        {
+            try
+            {
+                using (SqlConnection sqlConn = new SqlConnection(ConnectionString))
+                {
+                    sqlConn.Open();
+                    string updateStatement = "UPDATE accounts SET balance = balance - @amount WHERE account_id = @account_id;";
+                    SqlCommand sqlCmd = new SqlCommand(updateStatement, sqlConn);
+                    sqlCmd.Parameters.AddWithValue("@amount", transfer.Amount);
+                    sqlCmd.Parameters.AddWithValue("@account_id", transfer.AccountFrom);
+                    int rowsAffected = sqlCmd.ExecuteNonQuery();
+                    return rowsAffected == 1;
+                }
+            }
+            catch (SqlException)
+            {
+
+                throw;
+            }
+        }
+
+        public bool Receive(Transfer transfer)
+        {
+            try
+            {
+                using (SqlConnection sqlConn = new SqlConnection(ConnectionString))
+                {
+                    sqlConn.Open();
+                    string updateStatement = "UPDATE accounts SET balance = balance + @amount WHERE account_id = @account_id;";
+                    SqlCommand sqlCmd = new SqlCommand(updateStatement, sqlConn);
+                    sqlCmd.Parameters.AddWithValue("@amount", transfer.Amount);
+                    sqlCmd.Parameters.AddWithValue("@account_id", transfer.AccountTo);
+                    int rowsAffected = sqlCmd.ExecuteNonQuery();
+                    return rowsAffected == 1;
+                }
+            }
+            catch (SqlException)
+            {
+
+                throw;
+            }
+        }
+
 
         private Transfer MapTransfer(SqlDataReader reader)
         {

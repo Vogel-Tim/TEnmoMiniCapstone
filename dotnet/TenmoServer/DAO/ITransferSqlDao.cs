@@ -13,10 +13,10 @@ namespace TenmoServer.DAO
 
         public Transfer GetTransfer();
 
-        public bool Create(int typeId, int statusId, int accountFrom, int accountTo, decimal amount);
+        public Transfer Create(Transfer transfer);
 
-        //public Transfer Send();
+        public bool Send(Transfer transfer);
 
-        //public Transfer Recieve();
+        public bool Receive(Transfer transfer);
     }
 }
