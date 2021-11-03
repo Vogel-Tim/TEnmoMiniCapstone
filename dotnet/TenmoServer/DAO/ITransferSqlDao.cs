@@ -6,13 +6,17 @@ using TenmoServer.Models;
 
 namespace TenmoServer.DAO
 {
-    interface ITransferSqlDao
+    public interface ITransferSqlDao
     {
 
-        public List<Transfer> List();
+        public List<Transfer> List(int id);
 
         public Transfer GetTransfer();
 
-        public Transfer Create();
+        public bool Create(int typeId, int statusId, int accountFrom, int accountTo, decimal amount);
+
+        //public Transfer Send();
+
+        //public Transfer Recieve();
     }
 }

@@ -72,16 +72,10 @@ namespace TenmoServer.DAO
             return account;
         }
 
-
-        public Account Create(Account account)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool Delete(int id)
-        {
-            throw new NotImplementedException();
-        }
+        //public bool Delete(int id)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
         private Account MapAccount(SqlDataReader reader)
         {
