@@ -1,4 +1,6 @@
-﻿namespace TenmoServer.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace TenmoServer.Models
 {
     public class User
     {
