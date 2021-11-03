@@ -27,9 +27,9 @@ namespace TenmoServer.DAO
                 {
                     sqlConn.Open();
 
-                    string selectStatement = "SELECT * FROM transfers WHERE account_from = @id OR account_to = @id;";
+                    string selectStatement = "SELECT * FROM transfers WHERE account_from = @account_id OR account_to = @account_id;";
                     SqlCommand sqlCmd = new SqlCommand(selectStatement, sqlConn);
-                    sqlCmd.Parameters.AddWithValue("@id", id);
+                    sqlCmd.Parameters.AddWithValue("@account_id", id);
                     SqlDataReader reader = sqlCmd.ExecuteReader();
 
                     while (reader.Read())
@@ -47,9 +47,31 @@ namespace TenmoServer.DAO
             return transferList;
         }
 
-        public Transfer GetTransfer()
+        public Transfer GetTransfer(int id)
         {
-            throw new NotImplementedException();
+            Transfer transfer = new Transfer();
+            try
+            {
+                using (SqlConnection sqlConn = new SqlConnection(ConnectionString))
+                {
+                    sqlConn.Open();
+                    string selectStatement = "SELECT * FROM transfers WHERE transfer_id = @transfer_id;";
+                    SqlCommand sqlCmd = new SqlCommand(selectStatement, sqlConn);
+                    sqlCmd.Parameters.AddWithValue("@transfer_id", id);
+                    SqlDataReader reader = sqlCmd.ExecuteReader();
+
+                    if (reader.Read())
+                    {
+                        transfer = MapTransfer(reader);
+                    }
+                }
+            }
+            catch (SqlException)
+            {
+
+                throw;
+            }
+            return transfer;
         }
 
         //public Account UpdateAccountBalance(int id)

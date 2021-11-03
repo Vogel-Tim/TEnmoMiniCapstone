@@ -27,14 +27,42 @@ namespace TenmoServer.Controllers
             _userDao = userDao;
         }
 
-        [HttpPost] //localHost:44315/transfers
+        [HttpGet("{id}")]
+        public ActionResult<Transfer> GetTransfer(int id)
+        {
+            Transfer transfer = _transferDao.GetTransfer(id);
+            if (transfer.Id != 0)
+            {
+                return Ok(transfer);
+            }
+            else
+            {
+                return NotFound("No transfer exists with provided Id.");
+            }
+        }
+
+        [HttpGet("account/{accountId}")]  //Bring up in scrum meeting. Id param, but don't want in URL
+        public ActionResult<List<Transfer>> ListTransfers(int accountId)
+        {
+            List<Transfer> transfers = _transferDao.List(accountId);
+            if (transfers.Count != 0)
+            {
+                return Ok(transfers);
+            }
+            else
+            {
+                return NotFound("No transfers exist for provided account");
+            }
+        }
+
+        [HttpPost("transfer")] //localHost:44315/transfers/transfer
         public ActionResult<Transfer> CreateTransfer(Transfer transfer)
         {
             Transfer newTransfer = _transferDao.Create(transfer);
             return Created($"[controller]{newTransfer.Id}", newTransfer);
         }
 
-        [HttpPut] //localHost:44315/transfers
+        [HttpPut("transfer")] //localHost:44315/transfers/transfer
         public ActionResult Transaction(Transfer transfer)
         {
             bool send = _transferDao.Send(transfer);

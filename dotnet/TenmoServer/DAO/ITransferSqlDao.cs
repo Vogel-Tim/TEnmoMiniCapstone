@@ -11,7 +11,7 @@ namespace TenmoServer.DAO
 
         public List<Transfer> List(int id);
 
-        public Transfer GetTransfer();
+        public Transfer GetTransfer(int id);
 
         public Transfer Create(Transfer transfer);
 
