@@ -9,6 +9,7 @@ namespace TenmoClient
         private static readonly ConsoleService consoleService = new ConsoleService();
         private static readonly AuthService authService = new AuthService();
         private static readonly AccountApiService accountApiService = new AccountApiService();
+        private static readonly TransferApiService transferApiService = new TransferApiService();
 
         static void Main(string[] args)
         {
@@ -91,12 +92,19 @@ namespace TenmoClient
                 }
                 else if (menuSelection == 1)
                 {
-                    decimal balance = accountApiService.GetBalance();
-                    Console.WriteLine($"Your current account balance is: {balance}");
+                    decimal balance = accountApiService.GetAccount().Balance;
+                    Console.WriteLine($"Your current account balance is: {balance:C2}");
                 }
                 else if (menuSelection == 2)
                 {
-
+                    string fromOrTo = "";
+                    List<Transfer> transfers = transferApiService.GetTransfers();
+                    foreach(Transfer transfer in transfers)
+                    {
+                        fromOrTo = transfer.AccountFrom == accountApiService.GetAccount().Id ? "From" : "To";
+                        string username = fromOrTo == "From" ? accountApiService.GetUserAccount(transfer.AccountTo).Username : accountApiService.GetUserAccount(transfer.AccountFrom).Username;
+                        Console.WriteLine($"{transfer.Id}, {fromOrTo}: {username}, {transfer.Amount}");
+                    }
                 }
                 else if (menuSelection == 3)
                 {

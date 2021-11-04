@@ -29,7 +29,7 @@ namespace TenmoServer.Controllers
         [HttpGet("{userId}")]
         public ActionResult<Account> GetAccountBalance(int userId)
         {
-            Account account = _accountDao.GetAccount(userId);
+            Account account = _accountDao.GetAccount(userId, 0);
             if(account != null)
             {
                 return Ok(account);
@@ -40,7 +40,19 @@ namespace TenmoServer.Controllers
             }
         }
 
-
+        [HttpGet("account/{accountId}")]
+        public ActionResult<User> GetUserByAccount(int accountId)
+        {
+            User user = _userDao.GetUser(accountId);
+            if (user != null)
+            {
+                return Ok(user);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
 
     }
 }

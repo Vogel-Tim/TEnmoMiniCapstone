@@ -6,6 +6,7 @@ namespace TenmoServer.DAO
     public interface IUserDao
     {
         User GetUser(string username);
+        User GetUser(int accountId);
         User AddUser(string username, string password);
         List<User> GetUsers();
     }

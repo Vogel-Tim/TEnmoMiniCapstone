@@ -46,7 +46,7 @@ namespace TenmoServer.DAO
             return accounts;
         }
 
-        public Account GetAccount(int userId)
+        public Account GetAccount(int userId = 0, int accountId = 0)
         {
             Account account = new Account();
             try
@@ -55,9 +55,10 @@ namespace TenmoServer.DAO
                 {
                     sqlConn.Open();
                     string selectStatement = "SELECT A.account_id, A.user_id, A.balance FROM accounts A " +
-                                             "JOIN users U ON A.user_id = U.user_id WHERE U.user_id = @user_id;";
+                                             "JOIN users U ON A.user_id = U.user_id WHERE U.user_id = @user_id OR account_id = @account_id;";
                     SqlCommand sqlCmd = new SqlCommand(selectStatement, sqlConn);
                     sqlCmd.Parameters.AddWithValue("@user_id", userId);
+                    sqlCmd.Parameters.AddWithValue("@account_id", accountId);
                     SqlDataReader reader = sqlCmd.ExecuteReader();
 
                     if (reader.Read())

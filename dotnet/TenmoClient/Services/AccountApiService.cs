@@ -31,9 +31,11 @@ namespace TenmoClient
             client = restClient;
         }
 
-        public decimal GetBalance()
-        {            
-            RestRequest request = new RestRequest($"{API_URL}{user.UserId}");
+        public Account GetAccount()
+        {
+            string token = UserService.GetToken();
+            RestRequest request = new RestRequest($"{API_URL}{UserService.GetUserId()}");
+            request.AddHeader("Authorization", "Bearer " + token);
             IRestResponse<Account> response = client.Get<Account>(request);
 
             if (response.ResponseStatus != ResponseStatus.Completed || !response.IsSuccessful)
@@ -42,8 +44,23 @@ namespace TenmoClient
             }
             else
             {
-                Account account = response.Data;
-                return account.Balance;
+                return response.Data;
+            }
+        }
+
+        public ApiUser GetUserAccount(int accountId)
+        {
+            RestRequest request = new RestRequest($"{API_URL}account/{accountId}");
+            request.AddHeader("Authorization", "Bearer " + UserService.GetToken());
+            IRestResponse<ApiUser> response = client.Get<ApiUser>(request);
+
+            if (response.ResponseStatus != ResponseStatus.Completed || !response.IsSuccessful)
+            {
+                throw new Exception();
+            }
+            else
+            {
+                return response.Data;
             }
         }
 

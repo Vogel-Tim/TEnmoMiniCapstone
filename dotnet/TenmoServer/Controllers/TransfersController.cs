@@ -44,6 +44,7 @@ namespace TenmoServer.Controllers
         [HttpGet("account/{userId}")]  //Bring up in scrum meeting. Id param, but don't want in URL
         public ActionResult<List<Transfer>> ListTransfers(int userId)
         {
+            string user = User.Identity.Name;
             List<Transfer> transfers = _transferDao.List(userId);
             if (transfers.Count != 0)
             {

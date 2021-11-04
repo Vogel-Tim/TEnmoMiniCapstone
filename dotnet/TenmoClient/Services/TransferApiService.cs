@@ -10,7 +10,7 @@ namespace TenmoClient
     {
 
         private readonly static string API_URL = "https://localhost:44315/transfers/";
-        private readonly IRestClient client;
+        private readonly IRestClient client = new RestClient();
         private readonly ApiUser user = new ApiUser();
 
         public bool LoggedIn
@@ -21,6 +21,11 @@ namespace TenmoClient
             }
         }
 
+        public TransferApiService()
+        {
+
+        }
+
         public TransferApiService(IRestClient restClient)
         {
             client = restClient;
@@ -28,7 +33,8 @@ namespace TenmoClient
 
         public List<Transfer> GetTransfers()
         {
-            RestRequest request = new RestRequest($"{API_URL}account/{user.UserId}");
+            RestRequest request = new RestRequest($"{API_URL}account/{UserService.GetUserId()}");
+            request.AddHeader("Authorization", "Bearer " + UserService.GetToken());
             IRestResponse<List<Transfer>> response = client.Get<List<Transfer>>(request);
             if (response.ResponseStatus != ResponseStatus.Completed || !response.IsSuccessful)
             {
@@ -39,6 +45,8 @@ namespace TenmoClient
                 return response.Data;
             }
         }
+
+
 
     }
 }

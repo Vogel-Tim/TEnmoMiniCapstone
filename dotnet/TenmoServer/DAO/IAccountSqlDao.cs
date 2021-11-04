@@ -10,7 +10,7 @@ namespace TenmoServer.DAO
     {
         public List<Account> List();
 
-        public Account GetAccount(int id);
+        public Account GetAccount(int userId, int accountId);
 
         //public bool Delete(int id);
     }
