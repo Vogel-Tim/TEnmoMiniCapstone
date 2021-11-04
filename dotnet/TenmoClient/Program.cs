@@ -8,6 +8,7 @@ namespace TenmoClient
     {
         private static readonly ConsoleService consoleService = new ConsoleService();
         private static readonly AuthService authService = new AuthService();
+        private static readonly AccountApiService accountApiService = new AccountApiService();
 
         static void Main(string[] args)
         {
@@ -90,7 +91,8 @@ namespace TenmoClient
                 }
                 else if (menuSelection == 1)
                 {
-
+                    decimal balance = accountApiService.GetBalance();
+                    Console.WriteLine($"Your current account balance is: {balance}");
                 }
                 else if (menuSelection == 2)
                 {

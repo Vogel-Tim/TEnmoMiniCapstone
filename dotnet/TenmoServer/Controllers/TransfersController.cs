@@ -41,10 +41,10 @@ namespace TenmoServer.Controllers
             }
         }
 
-        [HttpGet("account/{accountId}")]  //Bring up in scrum meeting. Id param, but don't want in URL
-        public ActionResult<List<Transfer>> ListTransfers(int accountId)
+        [HttpGet("account/{userId}")]  //Bring up in scrum meeting. Id param, but don't want in URL
+        public ActionResult<List<Transfer>> ListTransfers(int userId)
         {
-            List<Transfer> transfers = _transferDao.List(accountId);
+            List<Transfer> transfers = _transferDao.List(userId);
             if (transfers.Count != 0)
             {
                 return Ok(transfers);

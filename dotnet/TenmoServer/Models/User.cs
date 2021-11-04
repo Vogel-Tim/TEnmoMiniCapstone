@@ -5,6 +5,8 @@ namespace TenmoServer.Models
     public class User
     {
         public int UserId { get; set; }
+
+        [Required(ErrorMessage = "Username is required.")]
         public string Username { get; set; }
         public string PasswordHash { get; set; }
         public string Salt { get; set; }
@@ -17,6 +19,8 @@ namespace TenmoServer.Models
     public class ReturnUser
     {
         public int UserId { get; set; }
+
+        [Required(ErrorMessage = "Username is required.")]
         public string Username { get; set; }
         //public string Role { get; set; }
         public string Token { get; set; }
@@ -27,6 +31,8 @@ namespace TenmoServer.Models
     /// </summary>
     public class LoginUser
     {
+
+        [Required(ErrorMessage = "Username is required.")]
         public string Username { get; set; }
         public string Password { get; set; }
     }

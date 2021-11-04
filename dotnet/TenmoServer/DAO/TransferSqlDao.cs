@@ -17,7 +17,7 @@ namespace TenmoServer.DAO
             ConnectionString = connectionString;
         }
 
-        public List<Transfer> List(int id)
+        public List<Transfer> List(int userid)
         {
             List<Transfer> transferList = new List<Transfer>();
 
@@ -27,9 +27,12 @@ namespace TenmoServer.DAO
                 {
                     sqlConn.Open();
 
-                    string selectStatement = "SELECT * FROM transfers WHERE account_from = @account_id OR account_to = @account_id;";
+                    string selectStatement = "SELECT T.transfer_id, T.account_from, T.account_to, T.amount, T.transfer_type_id, T.transfer_status_id FROM transfers T " +
+                                             "JOIN accounts A ON T.account_from = A.account_id " +
+                                             "JOIN users U ON A.user_id = U.user_id " +
+                                             "WHERE account_to = (SELECT account_id FROM accounts WHERE user_id = @user_id) OR U.user_id = @user_id;";
                     SqlCommand sqlCmd = new SqlCommand(selectStatement, sqlConn);
-                    sqlCmd.Parameters.AddWithValue("@account_id", id);
+                    sqlCmd.Parameters.AddWithValue("@user_id", userid);
                     SqlDataReader reader = sqlCmd.ExecuteReader();
 
                     while (reader.Read())
@@ -179,6 +182,7 @@ namespace TenmoServer.DAO
             transfer.AccountFrom = Convert.ToInt32(reader["account_from"]);
             transfer.AccountTo = Convert.ToInt32(reader["account_to"]);
             transfer.Amount = Convert.ToDecimal(reader["amount"]);
+            
 
             return transfer;
         }

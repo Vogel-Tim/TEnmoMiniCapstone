@@ -65,3 +65,10 @@ INSERT INTO transfer_statuses (transfer_status_desc) VALUES ('Rejected');
 
 INSERT INTO transfer_types (transfer_type_desc) VALUES ('Request');
 INSERT INTO transfer_types (transfer_type_desc) VALUES ('Send');
+
+SELECT * FROM accounts;
+SELECT * FROM users;
+SELECT * FROM transfers;
+SELECT * FROM transfers WHERE account_from = 2001 OR account_to = 2001;
+SELECT * FROM accounts A JOIN users U ON A.user_id = U.user_id WHERE U.user_id = 1001;
+SELECT * FROM transfers T JOIN accounts A ON T.account_from = A.account_id JOIN users U ON A.user_id = U.user_id WHERE account_from = 2001 OR account_to = 2001 AND U.username <> 'Daniel';

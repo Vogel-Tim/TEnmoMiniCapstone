@@ -26,10 +26,10 @@ namespace TenmoServer.Controllers
             _userDao = userDao;
         }
 
-        [HttpGet("{id}")]
-        public ActionResult<Account> GetAccountBalance(int id)
+        [HttpGet("{userId}")]
+        public ActionResult<Account> GetAccountBalance(int userId)
         {
-            Account account = _accountDao.GetAccount(id);
+            Account account = _accountDao.GetAccount(userId);
             if(account != null)
             {
                 return Ok(account);
