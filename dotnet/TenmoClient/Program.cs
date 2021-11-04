@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using TenmoClient.Models;
+using TenmoClient.Services;
+using TenmoClient.ApiServices;
 
 namespace TenmoClient
 {
@@ -10,6 +12,7 @@ namespace TenmoClient
         private static readonly AuthService authService = new AuthService();
         private static readonly AccountApiService accountApiService = new AccountApiService();
         private static readonly TransferApiService transferApiService = new TransferApiService();
+        private static readonly UserApiService userApiService = new UserApiService();
 
         static void Main(string[] args)
         {
@@ -74,6 +77,7 @@ namespace TenmoClient
             int menuSelection = -1;
             while (menuSelection != 0)
             {
+                //Console.Clear();
                 Console.WriteLine("");
                 Console.WriteLine("Welcome to TEnmo! Please make a selection: ");
                 Console.WriteLine("1: View your current balance");
@@ -100,19 +104,36 @@ namespace TenmoClient
                     string fromOrTo = "";
                     List<Transfer> transfers = transferApiService.GetTransfers();
                     foreach(Transfer transfer in transfers)
-                    {
-                        fromOrTo = transfer.AccountFrom == accountApiService.GetAccount().Id ? "From" : "To";
-                        string username = fromOrTo == "From" ? accountApiService.GetUserAccount(transfer.AccountTo).Username : accountApiService.GetUserAccount(transfer.AccountFrom).Username;
+                    {                                       //Determines whether console writes from or to for transfer
+                        fromOrTo = transfer.AccountFrom == accountApiService.GetAccount().Id ? "From" : "To"; 
+                                                            //Determines username depending on whether currently logged in user is account_from or to
+                        string username = fromOrTo == "From" ? accountApiService.GetUserAccount(transfer.AccountTo).Username : accountApiService.GetUserAccount(transfer.AccountFrom).Username; 
                         Console.WriteLine($"{transfer.Id}, {fromOrTo}: {username}, {transfer.Amount}");
                     }
+
+                    Console.WriteLine($"Choose a transfer to view details or exit");
                 }
                 else if (menuSelection == 3)
                 {
-
+                    
                 }
                 else if (menuSelection == 4)
                 {
-
+                    List<ApiUser> users = userApiService.GetUsers();
+                    foreach (ApiUser user in users)
+                    {
+                        if (user.UserId != UserService.GetUserId())
+                        {
+                            Console.WriteLine($"{user.UserId}: {user.Username}");
+                        }
+                    }
+                    //Prompt for UserId to send money to method
+                    Console.Write("Enter ID of user to send TE bucks to: ");
+                    Console.Write("Enter amount: ");
+                    //Transfer transfer = Transfer.CreateTransfer();
+                    transferApiService.Transaction(transfer);
+                    transferApiService.CreateTransfer(transfer);
+                    
                 }
                 else if (menuSelection == 5)
                 {
@@ -132,5 +153,6 @@ namespace TenmoClient
                 }
             }
         }
+
     }
 }

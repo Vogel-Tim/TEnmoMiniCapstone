@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 using RestSharp;
 using TenmoClient.Models;
+using TenmoClient.Services;
 
-namespace TenmoClient
+namespace TenmoClient.ApiServices
 {
     public class TransferApiService
     {
@@ -46,7 +47,37 @@ namespace TenmoClient
             }
         }
 
+        public bool CreateTransfer(Transfer transfer)
+        {
+            RestRequest request = new RestRequest($"{API_URL}transfer");
+            request.AddHeader("Authorization", "Bearer " + UserService.GetToken());
+            request.AddJsonBody(transfer);
+            IRestResponse response = client.Post(request);
+            if (response.ResponseStatus != ResponseStatus.Completed || !response.IsSuccessful)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
 
+        public bool Transaction(Transfer transfer)
+        {
+            RestRequest request = new RestRequest($"{API_URL}transfer");
+            request.AddHeader("Authorization", "Bearer " + UserService.GetToken());
+            request.AddJsonBody(transfer);
+            IRestResponse response = client.Put(request);
+            if (response.ResponseStatus != ResponseStatus.Completed || !response.IsSuccessful)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
 
     }
 }

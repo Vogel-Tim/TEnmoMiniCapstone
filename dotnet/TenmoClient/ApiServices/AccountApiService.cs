@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Text;
 using RestSharp;
 using TenmoClient.Models;
+using TenmoClient.ApiServices;
+using TenmoClient.Services;
 
-namespace TenmoClient
+namespace TenmoClient.ApiServices
 {
     public class AccountApiService
     {

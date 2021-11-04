@@ -3,7 +3,7 @@ using RestSharp.Authenticators;
 using System;
 using TenmoClient.Models;
 
-namespace TenmoClient
+namespace TenmoClient.Services
 {
     public class AuthService
     {

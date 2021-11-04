@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using TenmoClient.Models;
 
-namespace TenmoClient
+namespace TenmoClient.Services
 {
     public class ConsoleService
     {

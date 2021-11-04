@@ -1,6 +1,6 @@
 ﻿using TenmoClient.Models;
 
-namespace TenmoClient
+namespace TenmoClient.Services
 {
     public static class UserService
     {
