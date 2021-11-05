@@ -1,0 +1,2 @@
+﻿Handle Null transfers list
+Learn how to do the transactions for SQL in C#
