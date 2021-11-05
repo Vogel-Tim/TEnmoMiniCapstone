@@ -33,10 +33,10 @@ namespace TenmoClient.ApiServices
             client = restClient;
         }
 
-        public Account GetAccount()
+        public Account GetAccount(int id)
         {
             string token = UserService.GetToken();
-            RestRequest request = new RestRequest($"{API_URL}{UserService.GetUserId()}");
+            RestRequest request = new RestRequest($"{API_URL}{id}");
             request.AddHeader("Authorization", "Bearer " + token);
             IRestResponse<Account> response = client.Get<Account>(request);
 

@@ -39,7 +39,7 @@ namespace TenmoClient.ApiServices
             IRestResponse<List<Transfer>> response = client.Get<List<Transfer>>(request);
             if (response.ResponseStatus != ResponseStatus.Completed || !response.IsSuccessful)
             {
-                throw new Exception();
+                throw new Exception();//thrown when check for transfers and none exist. PLEASE FIX ME
             }
             else
             {
