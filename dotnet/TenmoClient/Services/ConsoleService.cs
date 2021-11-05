@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using TenmoClient.Models;
+using TenmoClient.ApiServices;
 
 namespace TenmoClient.Services
 {
@@ -69,6 +70,44 @@ namespace TenmoClient.Services
             while (key.Key != ConsoleKey.Enter);
             Console.WriteLine("");
             return pass;
+        }
+
+        public Transfer PromptForSendToId()
+        {
+            AccountApiService apiService = new AccountApiService();
+            Transfer transfer = new Transfer();
+            bool validInput = true;
+            
+            do
+            {
+                Console.Write("Enter ID of user to send TE bucks to: ");
+                if (!int.TryParse(Console.ReadLine(), out int userTo))
+                {
+                    Console.WriteLine("Invalid input! Please enter a valid user ID.");
+                    validInput = false;
+                }
+                else
+                {
+
+                    transfer.AccountTo = apiService.GetAccount(userTo).Id;
+                }
+                Console.WriteLine("Enter amount to transfer: $");
+                if (!decimal.TryParse(Console.ReadLine(), out decimal amount))
+                {
+                    Console.WriteLine("Invalid input! Please enter a valid dollar amount");
+                    validInput = false;
+                }
+                else
+                {
+                    transfer.Amount = amount;
+                }
+            } while (validInput == false);
+
+            transfer.TypeId = 2;
+            transfer.StatusId = 2;
+            transfer.AccountFrom = apiService.GetAccount(UserService.GetUserId()).Id;
+            return transfer;
+
         }
     }
 }

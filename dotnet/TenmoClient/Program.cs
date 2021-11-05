@@ -96,7 +96,7 @@ namespace TenmoClient
                 }
                 else if (menuSelection == 1)
                 {
-                    decimal balance = accountApiService.GetAccount().Balance;
+                    decimal balance = accountApiService.GetAccount(UserService.GetUserId()).Balance;
                     Console.WriteLine($"Your current account balance is: {balance:C2}");
                 }
                 else if (menuSelection == 2)
@@ -105,7 +105,7 @@ namespace TenmoClient
                     List<Transfer> transfers = transferApiService.GetTransfers();
                     foreach(Transfer transfer in transfers)
                     {                                       //Determines whether console writes from or to for transfer
-                        fromOrTo = transfer.AccountFrom == accountApiService.GetAccount().Id ? "From" : "To"; 
+                        fromOrTo = transfer.AccountFrom == accountApiService.GetAccount(UserService.GetUserId()).Id ? "From" : "To"; 
                                                             //Determines username depending on whether currently logged in user is account_from or to
                         string username = fromOrTo == "From" ? accountApiService.GetUserAccount(transfer.AccountTo).Username : accountApiService.GetUserAccount(transfer.AccountFrom).Username; 
                         Console.WriteLine($"{transfer.Id}, {fromOrTo}: {username}, {transfer.Amount}");
@@ -127,13 +127,18 @@ namespace TenmoClient
                             Console.WriteLine($"{user.UserId}: {user.Username}");
                         }
                     }
-                    //Prompt for UserId to send money to method
-                    Console.Write("Enter ID of user to send TE bucks to: ");
-                    Console.Write("Enter amount: ");
-                    //Transfer transfer = Transfer.CreateTransfer();
-                    transferApiService.Transaction(transfer);
-                    transferApiService.CreateTransfer(transfer);
-                    
+
+                    Transfer transfer = consoleService.PromptForSendToId();
+                    if(accountApiService.GetAccount(UserService.GetUserId()).Balance >= transfer.Amount)
+                    {
+                        transferApiService.CreateTransfer(transfer);
+                        transferApiService.Transaction(transfer);
+                       
+                    }
+                    else
+                    {
+                        Console.WriteLine("Transfer declined due to insufficient funds.");
+                    }
                 }
                 else if (menuSelection == 5)
                 {
