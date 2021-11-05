@@ -1,3 +1,3 @@
-﻿Handle Null transfers list
-Learn how to do the transactions for SQL in C#
-Handle inputing string value in PromptForTransactionAmount()
+﻿Exit with 0 in #3 pending transfers.
+Learn how to do the transactions for SQL in C#.
+Fix view pending transfers when there are none - exception.
