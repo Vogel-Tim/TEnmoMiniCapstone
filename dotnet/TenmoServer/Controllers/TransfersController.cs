@@ -52,7 +52,7 @@ namespace TenmoServer.Controllers
             }
             else
             {
-                return NotFound("No transfers exist for provided account");
+                return NotFound("No transfers exist yet for provided account");
             }
         }
 

@@ -29,7 +29,7 @@ namespace TenmoClient
                     Console.WriteLine("Welcome to TEnmo!");
                     Console.WriteLine("1: Login");
                     Console.WriteLine("2: Register");
-                    Console.Write("Please choose an option: ");
+                    Console.Write("Please choose an option (0 to exit): ");
 
                     if (!int.TryParse(Console.ReadLine(), out loginRegister))
                     {
@@ -44,6 +44,15 @@ namespace TenmoClient
                             if (user != null)
                             {
                                 UserService.SetLogin(user);
+                            }
+                            else
+                            {
+                                Console.WriteLine("Try again or hit 0 to exit to login menu.");
+                                if (Console.ReadLine() == "0")
+                                {
+                                    loginRegister = 0;
+                                    break;
+                                }
                             }
                         }
                     }
@@ -61,6 +70,10 @@ namespace TenmoClient
                                 loginRegister = -1; //reset outer loop to allow choice for login
                             }
                         }
+                    }
+                    else if (loginRegister == 0)
+                    {
+                        Environment.Exit(0);
                     }
                     else
                     {
@@ -103,37 +116,37 @@ namespace TenmoClient
                 {
                     string fromOrTo = "";
                     List<Transfer> transfers = transferApiService.GetTransfers();
-                    foreach(Transfer transfer in transfers)
-                    {                                       //Determines whether console writes from or to for transfer
-                        fromOrTo = transfer.AccountFrom == accountApiService.GetAccount(UserService.GetUserId()).Id ? "From" : "To"; 
-                                                            //Determines username depending on whether currently logged in user is account_from or to
-                        string username = fromOrTo == "From" ? accountApiService.GetUserAccount(transfer.AccountTo).Username : accountApiService.GetUserAccount(transfer.AccountFrom).Username; 
-                        Console.WriteLine($"{transfer.Id}, {fromOrTo}: {username}, {transfer.Amount}");
-                    }
+                    if (transfers != null)
+                    {
+                        foreach(Transfer transfer in transfers)
+                        {                                       //Determines whether console writes from or to for transfer
+                            fromOrTo = transfer.AccountFrom == accountApiService.GetAccount(UserService.GetUserId()).Id ? "To" : "From"; 
+                                                                //Determines username depending on whether currently logged in user is account_from or to
+                            string username = fromOrTo == "To" ? accountApiService.GetUserAccount(transfer.AccountTo).Username : accountApiService.GetUserAccount(transfer.AccountFrom).Username; 
+                            Console.WriteLine($"{transfer.Id}, {fromOrTo}: {username}, {transfer.Amount}");
+                        }
 
-                    Console.WriteLine($"Choose a transfer to view details or exit");
+                        Console.WriteLine($"Choose a transfer to view details or exit");
+                    }
                 }
                 else if (menuSelection == 3)
                 {
-                    
+                    //consoleService.DisplayUsers();
+                    //Transfer transfer = consoleService.PromptForTransactionInput("requesting from");
+
                 }
                 else if (menuSelection == 4)
                 {
-                    List<ApiUser> users = userApiService.GetUsers();
-                    foreach (ApiUser user in users)
-                    {
-                        if (user.UserId != UserService.GetUserId())
-                        {
-                            Console.WriteLine($"{user.UserId}: {user.Username}");
-                        }
-                    }
-
-                    Transfer transfer = consoleService.PromptForSendToId();
+                    consoleService.DisplayUsers();
+                    int userTo = consoleService.PromptForTransactionUserId();
+                    decimal amount = consoleService.PromptForTransactionAmount();
+                    Transfer transfer = consoleService.BuildTransactionSend(userTo, amount);
                     if(accountApiService.GetAccount(UserService.GetUserId()).Balance >= transfer.Amount)
-                    {
-                        transferApiService.CreateTransfer(transfer);
-                        transferApiService.Transaction(transfer);
-                       
+                    {                        
+                        if (transferApiService.CreateTransfer(transfer) && transferApiService.Transaction(transfer))
+                        {
+                            Console.WriteLine("Transaction successfull.");
+                        }
                     }
                     else
                     {
