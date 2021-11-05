@@ -106,6 +106,7 @@ namespace TenmoClient
                 if (!int.TryParse(Console.ReadLine(), out menuSelection))
                 {
                     Console.WriteLine("Invalid input. Please enter only a number.");
+                    menuSelection = -1;
                 }
                 else if (menuSelection == 1)
                 {
@@ -114,26 +115,50 @@ namespace TenmoClient
                 }
                 else if (menuSelection == 2)
                 {
-                    string fromOrTo = "";
-                    List<Transfer> transfers = transferApiService.GetTransfers();
-                    if (transfers != null)
+                    if (consoleService.PrintPastOrPendingTransfers(false))
                     {
-                        foreach(Transfer transfer in transfers)
-                        {                                       //Determines whether console writes from or to for transfer
-                            fromOrTo = transfer.AccountFrom == accountApiService.GetAccount(UserService.GetUserId()).Id ? "To" : "From"; 
-                                                                //Determines username depending on whether currently logged in user is account_from or to
-                            string username = fromOrTo == "To" ? accountApiService.GetUserAccount(transfer.AccountTo).Username : accountApiService.GetUserAccount(transfer.AccountFrom).Username; 
-                            Console.WriteLine($"{transfer.Id}, {fromOrTo}: {username}, {transfer.Amount}");
+                        int transferId = consoleService.PromptForTransferID("view");
+                        if (transferId != 0)
+                        {
+                            Transfer transfer = transferApiService.GetTransfer(transferId);
+                            consoleService.PrintTransferDetails(transfer);
                         }
-
-                        Console.WriteLine($"Choose a transfer to view details or exit");
                     }
                 }
                 else if (menuSelection == 3)
                 {
-                    //consoleService.DisplayUsers();
-                    //Transfer transfer = consoleService.PromptForTransactionInput("requesting from");
-
+                    if (consoleService.PrintPastOrPendingTransfers(true))
+                    {
+                        int transferId = consoleService.PromptForTransferID("approve/reject");
+                        string userChoice = consoleService.PromptForApproval();
+                        Transfer newTransfer = new Transfer();
+                        Transfer existingTransfer = transferApiService.GetTransfer(transferId);
+                        switch (userChoice)
+                        {
+                            case "1":
+                                if (accountApiService.GetAccount(UserService.GetUserId()).Balance >= existingTransfer.Amount)
+                                {
+                                    newTransfer = consoleService.BuildUpdatedTransfer(true, existingTransfer);
+                                    if (transferApiService.Transaction(newTransfer))
+                                    {
+                                        transferApiService.UpdateTransfer(newTransfer);
+                                        Console.WriteLine("Transfer approved. Transaction successful!");
+                                    }
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Insufficient funds. Transfer not approved.");
+                                }
+                                break;
+                            case "2":
+                                newTransfer = consoleService.BuildUpdatedTransfer(false, existingTransfer);
+                                transferApiService.UpdateTransfer(newTransfer);
+                                Console.WriteLine("Transfer rejected.");
+                                break;
+                            default:
+                                break;
+                        }
+                    }
                 }
                 else if (menuSelection == 4)
                 {
@@ -141,8 +166,8 @@ namespace TenmoClient
                     int userTo = consoleService.PromptForTransactionUserId();
                     decimal amount = consoleService.PromptForTransactionAmount();
                     Transfer transfer = consoleService.BuildTransactionSend(userTo, amount);
-                    if(accountApiService.GetAccount(UserService.GetUserId()).Balance >= transfer.Amount)
-                    {                        
+                    if (accountApiService.GetAccount(UserService.GetUserId()).Balance >= transfer.Amount)
+                    {
                         if (transferApiService.CreateTransfer(transfer) && transferApiService.Transaction(transfer))
                         {
                             Console.WriteLine("Transaction successfull.");
@@ -155,7 +180,18 @@ namespace TenmoClient
                 }
                 else if (menuSelection == 5)
                 {
-
+                    consoleService.DisplayUsers();
+                    int userFrom = consoleService.PromptForTransactionUserId();
+                    decimal amount = consoleService.PromptForTransactionAmount();
+                    Transfer transfer = consoleService.BuildTransactionRequest(userFrom, amount);
+                    if (transferApiService.CreateTransfer(transfer))
+                    {
+                        Console.WriteLine("Request sent.");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Request unsuccessful.");
+                    }
                 }
                 else if (menuSelection == 6)
                 {

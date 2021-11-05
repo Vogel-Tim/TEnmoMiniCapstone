@@ -13,6 +13,8 @@ namespace TenmoServer.DAO
 
         public Transfer GetTransfer(int id);
 
+        public bool Update(Transfer transfer);
+
         public Transfer Create(Transfer transfer);
 
         public bool Send(Transfer transfer);

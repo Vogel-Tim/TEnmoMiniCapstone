@@ -79,5 +79,19 @@ namespace TenmoServer.Controllers
             }
         }
 
+        [HttpPut("request")]
+        public ActionResult UpdateTransferStatus(Transfer request)
+        {
+            bool success = _transferDao.Update(request);
+            if (success)
+            {
+                return Ok(request);
+            }
+            else
+            {
+                return BadRequest("Error updating transfer.");
+            }
+        }
+
     }
 }

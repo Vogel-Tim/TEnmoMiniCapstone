@@ -77,23 +77,29 @@ namespace TenmoServer.DAO
             return transfer;
         }
 
-        //public Account UpdateAccountBalance(int id)
-        //{
-        //    try
-        //    {
-        //        using (SqlConnection sqlConn = new SqlConnection(ConnectionString))
-        //        {
+        public bool Update(Transfer transfer)
+        {
+            try
+            {
+                using (SqlConnection sqlConn = new SqlConnection(ConnectionString))
+                {
 
-        //            sqlConn.Open();
-        //            string updateStatement = "UPDATE accounts SET balance = "
-        //        }
-        //    }
-        //    catch (SqlException)
-        //    {
+                    sqlConn.Open();
+                    string updateStatement = "UPDATE transfers SET transfer_status_id = @transfer_status_id WHERE transfer_id = @transfer_id;";
+                    SqlCommand sqlCmd = new SqlCommand(updateStatement, sqlConn);
+                    sqlCmd.Parameters.AddWithValue("@transfer_status_id", transfer.StatusId);
+                    sqlCmd.Parameters.AddWithValue("@transfer_id", transfer.Id);
 
-        //        throw new NotImplementedException();
-        //    }
-        //}
+                    int rowsAffected = sqlCmd.ExecuteNonQuery();
+                    return rowsAffected == 1;
+                }
+            }
+            catch (SqlException)
+            {
+
+                throw new NotImplementedException();
+            }
+        }
 
         public Transfer Create(Transfer transfer)
         {
