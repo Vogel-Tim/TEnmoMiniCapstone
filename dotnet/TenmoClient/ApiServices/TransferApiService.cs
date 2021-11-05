@@ -32,7 +32,30 @@ namespace TenmoClient.ApiServices
             client = restClient;
         }
 
-        public List<Transfer> GetTransfers()
+        public Transfer GetTransfer(int transferId)
+        {
+            RestRequest request = new RestRequest($"{API_URL}{transferId}");
+            request.AddHeader("Authorization", "Bearer " + UserService.GetToken());
+            IRestResponse<Transfer> response = client.Get<Transfer>(request);
+            if (response.ResponseStatus != ResponseStatus.Completed || !response.IsSuccessful)
+            {
+                if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+                {
+                    Console.WriteLine("Transfer does not exist.");
+                    return response.Data;
+                }
+                else
+                {
+                    throw new Exception();
+                }
+            }
+            else
+            {
+                return response.Data;
+            }
+        }
+
+        public List<Transfer> GetTransfers(bool isPending)
         {
             RestRequest request = new RestRequest($"{API_URL}account/{UserService.GetUserId()}");
             request.AddHeader("Authorization", "Bearer " + UserService.GetToken());
@@ -51,7 +74,45 @@ namespace TenmoClient.ApiServices
             }
             else
             {
-                return response.Data;
+                List<Transfer> allTransfers = response.Data;
+                List<Transfer> desiredTransfers = new List<Transfer>();
+                if (isPending)
+                {
+                    foreach(Transfer transfer in allTransfers)
+                    {
+                        if (transfer.StatusId == 1)
+                        {
+                            desiredTransfers.Add(transfer);
+                        }
+                    }
+                }
+                else
+                {
+                    foreach (Transfer transfer in allTransfers)
+                    {
+                        if (transfer.StatusId != 1)
+                        {
+                            desiredTransfers.Add(transfer);
+                        }
+                    }
+                }
+                return desiredTransfers;
+            }
+        }
+
+        public bool UpdateTransfer(Transfer transfer)
+        {
+            RestRequest request = new RestRequest($"{API_URL}request");
+            request.AddHeader("Authorization", "Bearer " + UserService.GetToken());
+            request.AddJsonBody(transfer);
+            IRestResponse response = client.Put(request);
+            if (response.ResponseStatus != ResponseStatus.Completed || !response.IsSuccessful)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
             }
         }
 
@@ -86,6 +147,5 @@ namespace TenmoClient.ApiServices
                 return true;
             }
         }
-
     }
 }
