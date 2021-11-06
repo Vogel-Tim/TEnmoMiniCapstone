@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using TenmoClient.Models;
 using TenmoClient.ApiServices;
+using System.Threading;
 
 namespace TenmoClient.Services
 {
@@ -226,6 +227,7 @@ namespace TenmoClient.Services
 
         public void PrintTransferDetails(Transfer transfer)
         {
+            DisplayTEnmoLogo();
             Console.WriteLine($"Id: {transfer.Id}");
             Console.WriteLine($"From: {_accountApiService.GetUserAccount(transfer.AccountFrom).Username}");
             Console.WriteLine($"To: {_accountApiService.GetUserAccount(transfer.AccountTo).Username}");
@@ -250,6 +252,7 @@ namespace TenmoClient.Services
                 Console.WriteLine($"Status: Rejected");
             }
             Console.WriteLine($"Amount: {transfer.Amount:C2}");
+            Thread.Sleep(5000);
         }
 
         public string PromptForApproval()
@@ -278,5 +281,34 @@ namespace TenmoClient.Services
             return updatedTransfer;
         }
 
+        public void DisplayBalance(decimal balance)
+        {
+            
+            DisplayTEnmoLogo();
+            Console.WriteLine("");
+            Console.WriteLine($"Your current account balance is: {balance:C2}");
+            Console.WriteLine("Please Wait...");
+            Thread.Sleep(5000);
+            Console.Clear();
+        }
+
+
+        public void DisplayTEnmoLogo()
+        {
+            Console.Clear();
+            Console.WriteLine("");
+            Console.WriteLine(" ___________________       ____________ ");
+            Console.WriteLine("|                   |     |            |");
+            Console.WriteLine("|______	     _______|     |    ________|");
+            Console.WriteLine("       |    |             |   |         ");
+            Console.WriteLine("       |    |             |   |________     ______________     _______________     _______________ ");
+            Console.WriteLine("       |    |             |            |   |              |   |               |   |               |");
+            Console.WriteLine("       |    |             |    ________|   |    ______    |   |   ___   ___   |   |     _____     |");
+            Console.WriteLine("       |    |             |   |            |    |    |    |   |   | |   | |   |   |    |     |    |");
+            Console.WriteLine("       |    |             |   |________    |    |    |    |   |   | |   | |   |   |    |_____|    |");
+            Console.WriteLine("       |    |             |            |   |    |    |    |   |   | |   | |   |   |               |");
+            Console.WriteLine("       |____|             |____________|   |____|    |____|   |___| |___| |___|   |_______________|");
+            Console.WriteLine("");
+        }
     }
 }

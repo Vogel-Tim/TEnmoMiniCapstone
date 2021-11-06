@@ -4,6 +4,7 @@ using TenmoClient.Models;
 using TenmoClient.Services;
 using TenmoClient.ApiServices;
 
+
 namespace TenmoClient
 {
     class Program
@@ -26,6 +27,8 @@ namespace TenmoClient
                 int loginRegister = -1;
                 while (loginRegister != 1 && loginRegister != 2)
                 {
+                    consoleService.DisplayTEnmoLogo();
+                    Console.WriteLine("");
                     Console.WriteLine("Welcome to TEnmo!");
                     Console.WriteLine("1: Login");
                     Console.WriteLine("2: Register");
@@ -90,7 +93,7 @@ namespace TenmoClient
             int menuSelection = -1;
             while (menuSelection != 0)
             {
-                //Console.Clear();
+                consoleService.DisplayTEnmoLogo();
                 Console.WriteLine("");
                 Console.WriteLine("Welcome to TEnmo! Please make a selection: ");
                 Console.WriteLine("1: View your current balance");
@@ -111,7 +114,7 @@ namespace TenmoClient
                 else if (menuSelection == 1)
                 {
                     decimal balance = accountApiService.GetAccount(UserService.GetUserId()).Balance;
-                    Console.WriteLine($"Your current account balance is: {balance:C2}");
+                    consoleService.DisplayBalance(balance);
                 }
                 else if (menuSelection == 2)
                 {
