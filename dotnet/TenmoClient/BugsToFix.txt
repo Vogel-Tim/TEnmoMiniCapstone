@@ -1,3 +1,12 @@
-﻿Exit with 0 in #3 pending transfers.
+﻿Exit with 0 in #3 pending transfers. DONE 3
 Learn how to do the transactions for SQL in C#.
-Fix view pending transfers when there are none - exception.
+Fix view pending transfers when there are none - exception. (Only breaks after user has had a request before??) DONE 2,4,7
+Requesting user can and will accept pending request for transfer!! DONE 5
+
+1-Added "(Rejected)" to any past transfers with status id of 3;
+2-Changed output from response.Data to null for transfers and transfer returning NotFound from server;
+3-Added check for 0 in program to exit from pending transfers list;
+4-Added transfers list count != 0 in addition to != null to handle when they have past transfers, but none pending;
+5-Added check to make sure user was not trying to approve a request that they made for funds;
+6-Added multiple C2s to print to console as dollar amount;
+7-Added writeline for pending transfers list if the user has had pending transfers before, but not now;

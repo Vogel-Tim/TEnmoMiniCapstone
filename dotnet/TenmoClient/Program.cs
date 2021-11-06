@@ -130,33 +130,43 @@ namespace TenmoClient
                     if (consoleService.PrintPastOrPendingTransfers(true))
                     {
                         int transferId = consoleService.PromptForTransferID("approve/reject");
-                        string userChoice = consoleService.PromptForApproval();
-                        Transfer newTransfer = new Transfer();
-                        Transfer existingTransfer = transferApiService.GetTransfer(transferId);
-                        switch (userChoice)
+                        if (transferId != 0)
                         {
-                            case "1":
-                                if (accountApiService.GetAccount(UserService.GetUserId()).Balance >= existingTransfer.Amount)
+                            string userChoice = consoleService.PromptForApproval();
+                            Transfer newTransfer = new Transfer();
+                            Transfer existingTransfer = transferApiService.GetTransfer(transferId);
+                            if (!(existingTransfer.AccountTo == accountApiService.GetAccount(UserService.GetUserId()).Id))
+                            {
+                                switch (userChoice)
                                 {
-                                    newTransfer = consoleService.BuildUpdatedTransfer(true, existingTransfer);
-                                    if (transferApiService.Transaction(newTransfer))
-                                    {
+                                    case "1":
+                                        if (accountApiService.GetAccount(UserService.GetUserId()).Balance >= existingTransfer.Amount)
+                                        {
+                                            newTransfer = consoleService.BuildUpdatedTransfer(true, existingTransfer);
+                                            if (transferApiService.Transaction(newTransfer))
+                                            {
+                                                transferApiService.UpdateTransfer(newTransfer);
+                                                Console.WriteLine("Transfer approved. Transaction successful!");
+                                            }
+                                        }
+                                        else
+                                        {
+                                            Console.WriteLine("Insufficient funds. Transfer not approved.");
+                                        }
+                                        break;
+                                    case "2":
+                                        newTransfer = consoleService.BuildUpdatedTransfer(false, existingTransfer);
                                         transferApiService.UpdateTransfer(newTransfer);
-                                        Console.WriteLine("Transfer approved. Transaction successful!");
-                                    }
+                                        Console.WriteLine("Transfer rejected.");
+                                        break;
+                                    default:
+                                        break;
                                 }
-                                else
-                                {
-                                    Console.WriteLine("Insufficient funds. Transfer not approved.");
-                                }
-                                break;
-                            case "2":
-                                newTransfer = consoleService.BuildUpdatedTransfer(false, existingTransfer);
-                                transferApiService.UpdateTransfer(newTransfer);
-                                Console.WriteLine("Transfer rejected.");
-                                break;
-                            default:
-                                break;
+                            }
+                            else
+                            {
+                                Console.WriteLine("Please wait for user to accept or reject this request for funds.");
+                            }
                         }
                     }
                 }

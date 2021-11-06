@@ -42,7 +42,7 @@ namespace TenmoClient.ApiServices
                 if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
                 {
                     Console.WriteLine("Transfer does not exist.");
-                    return response.Data;
+                    return null;
                 }
                 else
                 {
@@ -65,7 +65,7 @@ namespace TenmoClient.ApiServices
                 if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
                 {
                     Console.WriteLine("You have no past transfers.");
-                    return response.Data;
+                    return null;
                 }
                 else
                 {
@@ -95,6 +95,10 @@ namespace TenmoClient.ApiServices
                             desiredTransfers.Add(transfer);
                         }
                     }
+                }
+                if (desiredTransfers.Count == 0)
+                {
+                    Console.WriteLine("You have no pending transfers right now.");
                 }
                 return desiredTransfers;
             }

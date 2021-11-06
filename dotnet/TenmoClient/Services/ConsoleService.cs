@@ -198,16 +198,23 @@ namespace TenmoClient.Services
         public bool PrintPastOrPendingTransfers(bool isPending)
         {
             string fromOrTo = "";
+            string isRejected;
             List<Transfer> transfers = _transferApiService.GetTransfers(isPending);
-            if (transfers != null)
+            if (transfers != null && transfers.Count != 0)
             {
                 
                 foreach (Transfer transfer in transfers)
-                {                                       //Determines whether console writes from or to for transfer
+                {
+                    isRejected = "";
+                    //Determines whether console writes from or to for transfer
                     fromOrTo = transfer.AccountFrom == _accountApiService.GetAccount(UserService.GetUserId()).Id ? "To" : "From";
                     //Determines username depending on whether currently logged in user is account_from or to
                     string username = fromOrTo == "To" ? _accountApiService.GetUserAccount(transfer.AccountTo).Username : _accountApiService.GetUserAccount(transfer.AccountFrom).Username;
-                    Console.WriteLine($"{transfer.Id}, {fromOrTo}: {username}, {transfer.Amount}");
+                    if (transfer.StatusId == 3)
+                    {
+                        isRejected = "(Rejected)";
+                    }
+                    Console.WriteLine($"{transfer.Id}, {fromOrTo}: {username}, {transfer.Amount:C2} {isRejected}");
                 }
                 return true;
             }
@@ -242,7 +249,7 @@ namespace TenmoClient.Services
             {
                 Console.WriteLine($"Status: Rejected");
             }
-            Console.WriteLine($"Amount: {transfer.Amount}");
+            Console.WriteLine($"Amount: {transfer.Amount:C2}");
         }
 
         public string PromptForApproval()
@@ -251,7 +258,7 @@ namespace TenmoClient.Services
             Console.WriteLine("2: Reject");
             Console.WriteLine("0: Exit");
             Console.WriteLine("-----------");
-            Console.WriteLine("Choose a response to requested transfer: ");
+            Console.Write("Choose a response to requested transfer: ");
 
             string userChoice = Console.ReadLine();
             return userChoice;
