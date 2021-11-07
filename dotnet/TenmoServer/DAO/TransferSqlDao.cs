@@ -9,7 +9,6 @@ namespace TenmoServer.DAO
 {
     public class TransferSqlDao : ITransferSqlDao
     {
-
         private readonly string ConnectionString;
 
         public TransferSqlDao(string connectionString)
@@ -177,7 +176,6 @@ namespace TenmoServer.DAO
             }
         }
 
-
         private Transfer MapTransfer(SqlDataReader reader)
         {
             Transfer transfer = new Transfer();
@@ -189,7 +187,6 @@ namespace TenmoServer.DAO
             transfer.AccountTo = Convert.ToInt32(reader["account_to"]);
             transfer.Amount = Convert.ToDecimal(reader["amount"]);
             
-
             return transfer;
         }
     }

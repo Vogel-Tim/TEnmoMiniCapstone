@@ -36,6 +36,5 @@ namespace TenmoServer.Controllers
                 return NotFound("No users in the system??");
             }
         }
-
     }
 }

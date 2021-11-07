@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using TenmoClient.Models;
 using TenmoClient.Services;
 using TenmoClient.ApiServices;
+using System.Threading;
+using System.Transactions;
 
 
 namespace TenmoClient
@@ -37,6 +39,7 @@ namespace TenmoClient
                     if (!int.TryParse(Console.ReadLine(), out loginRegister))
                     {
                         Console.WriteLine("Invalid input. Please enter only a number.");
+                        Thread.Sleep(2000);
                     }
                     else if (loginRegister == 1)
                     {
@@ -50,7 +53,7 @@ namespace TenmoClient
                             }
                             else
                             {
-                                Console.WriteLine("Try again or hit 0 to exit to login menu.");
+                                Console.Write("Press ENTER to try again or ENTER 0 to exit to login menu.");
                                 if (Console.ReadLine() == "0")
                                 {
                                     loginRegister = 0;
@@ -70,6 +73,7 @@ namespace TenmoClient
                             {
                                 Console.WriteLine("");
                                 Console.WriteLine("Registration successful. You can now log in.");
+                                Thread.Sleep(2000);
                                 loginRegister = -1; //reset outer loop to allow choice for login
                             }
                         }
@@ -81,6 +85,7 @@ namespace TenmoClient
                     else
                     {
                         Console.WriteLine("Invalid selection.");
+                        Thread.Sleep(2000);
                     }
                 }
 
@@ -135,32 +140,42 @@ namespace TenmoClient
                         int transferId = consoleService.PromptForTransferID("approve/reject");
                         if (transferId != 0)
                         {
-                            string userChoice = consoleService.PromptForApproval();
                             Transfer newTransfer = new Transfer();
                             Transfer existingTransfer = transferApiService.GetTransfer(transferId);
                             if (!(existingTransfer.AccountTo == accountApiService.GetAccount(UserService.GetUserId()).Id))
                             {
+                                string userChoice = consoleService.PromptForApproval();
+
                                 switch (userChoice)
                                 {
                                     case "1":
                                         if (accountApiService.GetAccount(UserService.GetUserId()).Balance >= existingTransfer.Amount)
                                         {
                                             newTransfer = consoleService.BuildUpdatedTransfer(true, existingTransfer);
+                                            TransactionScope transaction = new TransactionScope();
                                             if (transferApiService.Transaction(newTransfer))
                                             {
                                                 transferApiService.UpdateTransfer(newTransfer);
+                                                transaction.Complete();
                                                 Console.WriteLine("Transfer approved. Transaction successful!");
+                                                Thread.Sleep(2000);
+                                            }
+                                            else
+                                            {
+                                                transaction.Dispose();
                                             }
                                         }
                                         else
                                         {
                                             Console.WriteLine("Insufficient funds. Transfer not approved.");
+                                            Thread.Sleep(2000);
                                         }
                                         break;
                                     case "2":
                                         newTransfer = consoleService.BuildUpdatedTransfer(false, existingTransfer);
                                         transferApiService.UpdateTransfer(newTransfer);
                                         Console.WriteLine("Transfer rejected.");
+                                        Thread.Sleep(2000);
                                         break;
                                     default:
                                         break;
@@ -169,30 +184,43 @@ namespace TenmoClient
                             else
                             {
                                 Console.WriteLine("Please wait for user to accept or reject this request for funds.");
+                                Thread.Sleep(2000);
                             }
                         }
                     }
                 }
                 else if (menuSelection == 4)
                 {
+                    consoleService.DisplayTEnmoLogo();
+                    consoleService.PrintUserHeaderForSend();
                     consoleService.DisplayUsers();
                     int userTo = consoleService.PromptForTransactionUserId();
                     decimal amount = consoleService.PromptForTransactionAmount();
                     Transfer transfer = consoleService.BuildTransactionSend(userTo, amount);
                     if (accountApiService.GetAccount(UserService.GetUserId()).Balance >= transfer.Amount)
                     {
+                        TransactionScope transaction = new TransactionScope();
                         if (transferApiService.CreateTransfer(transfer) && transferApiService.Transaction(transfer))
                         {
+                            transaction.Complete();
                             Console.WriteLine("Transaction successfull.");
+                            Thread.Sleep(2000);
+                        }
+                        else
+                        {
+                            transaction.Dispose();
                         }
                     }
                     else
                     {
                         Console.WriteLine("Transfer declined due to insufficient funds.");
+                        Thread.Sleep(2000);
                     }
                 }
                 else if (menuSelection == 5)
                 {
+                    consoleService.DisplayTEnmoLogo();
+                    consoleService.PrintUserHeaderForRequest();
                     consoleService.DisplayUsers();
                     int userFrom = consoleService.PromptForTransactionUserId();
                     decimal amount = consoleService.PromptForTransactionAmount();
@@ -200,23 +228,29 @@ namespace TenmoClient
                     if (transferApiService.CreateTransfer(transfer))
                     {
                         Console.WriteLine("Request sent.");
+                        Thread.Sleep(2000);
                     }
                     else
                     {
                         Console.WriteLine("Request unsuccessful.");
+                        Thread.Sleep(2000);
                     }
                 }
                 else if (menuSelection == 6)
                 {
                     Console.WriteLine("");
                     UserService.SetLogin(new ApiUser()); //wipe out previous login info
-                    Console.Clear();
                     menuSelection = 0;
                 }
-                else
+                else if(menuSelection == 0)
                 {
                     Console.WriteLine("Goodbye!");
                     Environment.Exit(0);
+                }
+                else
+                {
+                    Console.WriteLine("Invalid input, please try again.");
+                    Thread.Sleep(2000);
                 }
             }
         }

@@ -74,11 +74,6 @@ namespace TenmoServer.DAO
             return account;
         }
 
-        //public bool Delete(int id)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
         private Account MapAccount(SqlDataReader reader)
         {
             Account account = new Account();
@@ -88,33 +83,5 @@ namespace TenmoServer.DAO
 
             return account;
         }
-        
-        //private decimal BalanceUpdate(decimal amount, int idTo, int idFrom)
-        //{
-        //    List<decimal> balances = new List<decimal>();
-        //    try
-        //    {
-        //        using (SqlConnection SqlConn = new SqlConnection(ConnectionString))
-        //        {
-        //            SqlConn.Open();
-        //            string selectStatement = "SELECT balance FROM accounts WHERE account_id IN(@idTo, @idFrom);";
-        //            SqlCommand sqlCmd = new SqlCommand(selectStatement, SqlConn);
-        //            sqlCmd.Parameters.AddWithValue("@idTo", idTo);
-        //            sqlCmd.Parameters.AddWithValue("@idFrom", idFrom);
-        //            SqlDataReader reader = sqlCmd.ExecuteReader();
-
-        //            while (reader.Read())
-        //            {
-        //                Account account = MapAccount(reader);
-        //                balances.Add(account.Balance);
-        //            }
-        //        }
-        //    }
-        //    catch (SqlException)
-        //    {
-
-        //        throw new NotImplementedException();
-        //    }
-        //}
     }
 }

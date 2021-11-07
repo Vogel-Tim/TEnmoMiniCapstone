@@ -1,6 +1,6 @@
 ﻿Exit with 0 in #3 pending transfers. DONE 3
 Learn how to do the transactions for SQL in C#.
-Fix view pending transfers when there are none - exception. (Only breaks after user has had a request before??) DONE 2,4,7
+Fix view pending transfers when there are none - exception. 1DONE 2,4,7
 Requesting user can and will accept pending request for transfer!! DONE 5
 
 1-Added "(Rejected)" to any past transfers with status id of 3;

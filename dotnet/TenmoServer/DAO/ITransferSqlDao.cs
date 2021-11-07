@@ -8,7 +8,6 @@ namespace TenmoServer.DAO
 {
     public interface ITransferSqlDao
     {
-
         public List<Transfer> List(int id);
 
         public Transfer GetTransfer(int id);

@@ -61,7 +61,6 @@ namespace TenmoClient.Services
             } while (_validInput == false);
 
             return _transferId;
-
         }
 
         public LoginUser PromptForLogin()
@@ -109,14 +108,32 @@ namespace TenmoClient.Services
             return pass;
         }
 
+        public void PrintUserHeaderForSend()
+        {
+            Console.WriteLine("------------------------");
+            Console.WriteLine("|        SEND TO       |");
+            Console.WriteLine("------------------------");
+            Console.WriteLine("| ID      USER         |");
+            Console.WriteLine("------------------------");
+        }
+
+        public void PrintUserHeaderForRequest()
+        {
+            Console.WriteLine("------------------------");
+            Console.WriteLine("|     REQUEST FROM     |");
+            Console.WriteLine("------------------------");
+            Console.WriteLine("| ID      USER         |");
+            Console.WriteLine("------------------------");
+        }
+
         public void DisplayUsers()
-        {            
+        {
             List<ApiUser> users = _userApiService.GetUsers();
             foreach (ApiUser user in users)
             {
                 if (user.UserId != UserService.GetUserId())
                 {
-                    Console.WriteLine($"{user.UserId}: {user.Username}");
+                    Console.WriteLine($"  {user.UserId}:   {user.Username}");
                 }
             }
         }
@@ -147,6 +164,7 @@ namespace TenmoClient.Services
 
         public int PromptForTransactionUserId()
         {
+            Console.WriteLine("");
             List<ApiUser> users = _userApiService.GetUsers();
             _validInput = false;
             int _userTo = 0;
@@ -203,7 +221,8 @@ namespace TenmoClient.Services
             List<Transfer> transfers = _transferApiService.GetTransfers(isPending);
             if (transfers != null && transfers.Count != 0)
             {
-                
+                DisplayTEnmoLogo();
+                PrintTransfersHeader();
                 foreach (Transfer transfer in transfers)
                 {
                     isRejected = "";
@@ -215,7 +234,7 @@ namespace TenmoClient.Services
                     {
                         isRejected = "(Rejected)";
                     }
-                    Console.WriteLine($"{transfer.Id}, {fromOrTo}: {username}, {transfer.Amount:C2} {isRejected}");
+                    PrintTransfers(transfer.Id, fromOrTo, username, transfer.Amount, isRejected);
                 }
                 return true;
             }
@@ -225,19 +244,84 @@ namespace TenmoClient.Services
             }
         }
 
+        public void PrintTransfers(int id, string fromOrTo, string username, decimal amount, string isRejected)
+        {
+            string idString = id.ToString();
+            string amountString = amount.ToString();
+            int spacing1 = 0;
+            int spacing2 = 0;
+            spacing1 = 12 - idString.Length;
+            spacing2 = 12 - fromOrTo.Length;
+            for(int i = 0; i <= 30; i++)
+            {
+                if (i == 2)
+                {
+                    Console.Write(idString);
+                }
+                else if (i == 9)
+                {
+                    Console.Write(fromOrTo + ": ");
+                    if (fromOrTo.Length == 2)
+                    {
+                        if (username.Length > 11)
+                        {
+                            username = username.Substring(0, 11);
+                        }
+                        Console.Write($"  {username}");
+                        i += username.Length;
+                    }
+                    else
+                    {
+                        if (username.Length > 11)
+                        {
+                            username = username.Substring(0, 11);
+                        }
+                        Console.Write(username);
+                        i += username.Length;
+                    }
+                }
+                else if (i == 25)
+                {
+                    Console.Write($"{amount:C2}");
+                }
+                else
+                {
+                    Console.Write(" ");
+                }
+            }
+            Console.WriteLine("");
+            
+        }
+
+        public void PrintTransfersHeader()
+        {
+            Console.WriteLine("-----------------------------------------");
+            Console.WriteLine("|               TRANSFERS               |");
+            Console.WriteLine("-----------------------------------------");
+            Console.WriteLine("| ID        FROM/TO              AMOUNT |");
+            Console.WriteLine("-----------------------------------------");
+        }
+
+        public void SingleTransferHeader(int transfer)
+        {
+            Console.WriteLine( "----------------------------");
+            Console.WriteLine($"|   TRANSFER {transfer} DETAILS  |");
+            Console.WriteLine("----------------------------");
+        }
         public void PrintTransferDetails(Transfer transfer)
         {
             DisplayTEnmoLogo();
-            Console.WriteLine($"Id: {transfer.Id}");
-            Console.WriteLine($"From: {_accountApiService.GetUserAccount(transfer.AccountFrom).Username}");
-            Console.WriteLine($"To: {_accountApiService.GetUserAccount(transfer.AccountTo).Username}");
+            SingleTransferHeader(transfer.Id);
+            Console.WriteLine($"Id:     {transfer.Id}");
+            Console.WriteLine($"From:   {_accountApiService.GetUserAccount(transfer.AccountFrom).Username}");
+            Console.WriteLine($"To:     {_accountApiService.GetUserAccount(transfer.AccountTo).Username}");
             if (transfer.TypeId == 1)
             {
-                Console.WriteLine($"Type: Request");
+                Console.WriteLine($"Type:   Request");
             }
             else if (transfer.TypeId == 2)
             {
-                Console.WriteLine($"Type: Send");
+                Console.WriteLine($"Type:   Send");
             }
             if (transfer.StatusId == 1)
             {
@@ -252,7 +336,9 @@ namespace TenmoClient.Services
                 Console.WriteLine($"Status: Rejected");
             }
             Console.WriteLine($"Amount: {transfer.Amount:C2}");
-            Thread.Sleep(5000);
+            Console.WriteLine("");
+            Console.WriteLine("Please hit ENTER to continue.");
+            Console.ReadLine();
         }
 
         public string PromptForApproval()
@@ -291,7 +377,6 @@ namespace TenmoClient.Services
             Thread.Sleep(5000);
             Console.Clear();
         }
-
 
         public void DisplayTEnmoLogo()
         {

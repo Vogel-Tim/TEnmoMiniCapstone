@@ -9,7 +9,6 @@ namespace TenmoClient.ApiServices
 {
     public class UserApiService
     {
-
         private readonly static string API_URL = "https://localhost:44315/users/";
         private readonly IRestClient client = new RestClient();
         private static ApiUser user = new ApiUser();
@@ -38,6 +37,5 @@ namespace TenmoClient.ApiServices
                 return response.Data;
             }
         }
-
     }
 }

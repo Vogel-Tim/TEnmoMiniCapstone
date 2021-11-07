@@ -12,6 +12,5 @@ namespace TenmoServer.DAO
 
         public Account GetAccount(int userId, int accountId);
 
-        //public bool Delete(int id);
     }
 }

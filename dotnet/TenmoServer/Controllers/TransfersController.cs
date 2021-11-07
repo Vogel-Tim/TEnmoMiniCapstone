@@ -92,6 +92,5 @@ namespace TenmoServer.Controllers
                 return BadRequest("Error updating transfer.");
             }
         }
-
     }
 }

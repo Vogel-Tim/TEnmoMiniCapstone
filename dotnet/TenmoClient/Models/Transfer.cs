@@ -23,19 +23,5 @@ namespace TenmoClient.Models
 
         [Required(ErrorMessage = "The amount to transfer is a required field for a Transfer.")]
         public decimal Amount { get; set; }
-
-
-        //public static Transfer CreateTransfer()
-        //{
-        //    Transfer transfer = new Transfer();
-        //    transfer.TypeId = 2;
-        //    transfer.StatusId = 2;
-        //    transfer.AccountFrom = 2001;
-        //    transfer.AccountTo = 2002;
-        //    transfer.Amount = 110;
-
-        //    return transfer;
-        //}
-
     }
 }

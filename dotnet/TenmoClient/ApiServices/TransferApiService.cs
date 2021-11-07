@@ -4,12 +4,12 @@ using System.Text;
 using RestSharp;
 using TenmoClient.Models;
 using TenmoClient.Services;
+using System.Threading;
 
 namespace TenmoClient.ApiServices
 {
     public class TransferApiService
     {
-
         private readonly static string API_URL = "https://localhost:44315/transfers/";
         private readonly IRestClient client = new RestClient();
         private readonly ApiUser user = new ApiUser();
@@ -42,6 +42,7 @@ namespace TenmoClient.ApiServices
                 if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
                 {
                     Console.WriteLine("Transfer does not exist.");
+                    Thread.Sleep(2000);
                     return null;
                 }
                 else
@@ -65,6 +66,7 @@ namespace TenmoClient.ApiServices
                 if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
                 {
                     Console.WriteLine("You have no past transfers.");
+                    Thread.Sleep(2000);
                     return null;
                 }
                 else
@@ -99,6 +101,7 @@ namespace TenmoClient.ApiServices
                 if (desiredTransfers.Count == 0)
                 {
                     Console.WriteLine("You have no pending transfers right now.");
+                    Thread.Sleep(2000);
                 }
                 return desiredTransfers;
             }

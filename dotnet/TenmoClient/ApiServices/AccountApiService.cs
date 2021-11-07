@@ -65,6 +65,5 @@ namespace TenmoClient.ApiServices
                 return response.Data;
             }
         }
-
     }
 }
