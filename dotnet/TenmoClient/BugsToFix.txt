@@ -10,3 +10,6 @@ Requesting user can and will accept pending request for transfer!! DONE 5
 5-Added check to make sure user was not trying to approve a request that they made for funds;
 6-Added multiple C2s to print to console as dollar amount;
 7-Added writeline for pending transfers list if the user has had pending transfers before, but not now;
+8-Added execption handling for Transactions in Program.cs and in all other Trys
+9-Added transaction.Dispose() after transaction.Commit() in Program, otherwise transaction stays open and is unable to process a subsequent transaction.
+10-Added a decimal.CompareTo in ConsoleService - PromptForTransactionAmount to ensure a transaction amount > .01;

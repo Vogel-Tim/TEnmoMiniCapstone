@@ -37,9 +37,9 @@ namespace TenmoServer.DAO
                     }
                 }
             }
-            catch (SqlException)
+            catch (SqlException ex)
             {
-                throw;
+                Console.WriteLine(ex.Message);
             }
 
             return returnUser;
@@ -65,9 +65,9 @@ namespace TenmoServer.DAO
                     }
                 }
             }
-            catch (SqlException)
+            catch (SqlException ex)
             {
-                throw;
+                Console.WriteLine(ex.Message);
             }
 
             return returnUser;
@@ -93,9 +93,9 @@ namespace TenmoServer.DAO
                     }
                 }
             }
-            catch (SqlException)
+            catch (SqlException ex)
             {
-                throw;
+                Console.WriteLine(ex.Message);
             }
 
             return returnUsers;
@@ -127,9 +127,9 @@ namespace TenmoServer.DAO
                     cmd.ExecuteNonQuery();
                 }
             }
-            catch (SqlException)
+            catch (SqlException ex)
             {
-                throw;
+                Console.WriteLine(ex.Message);
             }
 
             return GetUser(username);

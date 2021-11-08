@@ -44,7 +44,7 @@ namespace TenmoServer.DAO
             catch (SqlException ex)
             {
 
-                throw new NotImplementedException();
+                Console.WriteLine(ex.Message);
             }
             return transferList;
         }
@@ -68,10 +68,9 @@ namespace TenmoServer.DAO
                     }
                 }
             }
-            catch (SqlException)
+            catch (SqlException ex)
             {
-
-                throw;
+                Console.WriteLine(ex.Message);
             }
             return transfer;
         }
@@ -93,16 +92,15 @@ namespace TenmoServer.DAO
                     return rowsAffected == 1;
                 }
             }
-            catch (SqlException)
+            catch (SqlException ex)
             {
-
-                throw new NotImplementedException();
+                Console.WriteLine(ex.Message);
+                return false;
             }
         }
 
         public Transfer Create(Transfer transfer)
         {
-           
             try
             {
                 using (SqlConnection sqlConn = new SqlConnection(ConnectionString))
@@ -126,9 +124,10 @@ namespace TenmoServer.DAO
                     return transfer;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                Console.WriteLine(ex.Message);
+                return new Transfer();
             }           
         }
 
@@ -147,10 +146,11 @@ namespace TenmoServer.DAO
                     return rowsAffected == 1;
                 }
             }
-            catch (SqlException)
+            catch (SqlException ex)
             {
 
-                throw;
+                Console.WriteLine(ex.Message);
+                return false;
             }
         }
 
@@ -169,10 +169,10 @@ namespace TenmoServer.DAO
                     return rowsAffected == 1;
                 }
             }
-            catch (SqlException)
+            catch (SqlException ex)
             {
-
-                throw;
+                Console.WriteLine(ex.Message);
+                return false;
             }
         }
 

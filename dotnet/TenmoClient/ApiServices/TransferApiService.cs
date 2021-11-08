@@ -47,7 +47,9 @@ namespace TenmoClient.ApiServices
                 }
                 else
                 {
-                    throw new Exception();
+                    Console.WriteLine("An error has occured.");
+                    Thread.Sleep(2000);
+                    return null;
                 }
             }
             else
@@ -71,7 +73,9 @@ namespace TenmoClient.ApiServices
                 }
                 else
                 {
-                    throw new Exception();
+                    Console.WriteLine("An error has occured.");
+                    Thread.Sleep(2000);
+                    return null;
                 }
             }
             else

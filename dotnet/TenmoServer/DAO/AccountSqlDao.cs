@@ -40,7 +40,7 @@ namespace TenmoServer.DAO
             catch (SqlException ex)
             {
 
-                throw new NotImplementedException();
+                Console.WriteLine(ex.Message);
             }
 
             return accounts;
@@ -67,9 +67,9 @@ namespace TenmoServer.DAO
                     }
                 }
             }
-            catch (SqlException)
+            catch (SqlException ex)
             {
-                throw new NotImplementedException();
+                Console.WriteLine(ex.Message);
             }
             return account;
         }

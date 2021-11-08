@@ -201,9 +201,9 @@ namespace TenmoClient.Services
             do
             {
                 Console.Write("Enter amount to transfer: $");
-                if (!decimal.TryParse(Console.ReadLine(), out decimal amount) || amount <= 0)
+                if (!decimal.TryParse(Console.ReadLine(), out decimal amount) || amount.CompareTo(.01M) < 0)
                 {
-                    Console.WriteLine("Invalid input! Please enter a valid dollar amount greater than 0.");
+                    Console.WriteLine("Invalid input! Please enter a valid dollar amount greater than $0.01");
                 }
                 else
                 {
@@ -246,17 +246,12 @@ namespace TenmoClient.Services
 
         public void PrintTransfers(int id, string fromOrTo, string username, decimal amount, string isRejected)
         {
-            string idString = id.ToString();
-            string amountString = amount.ToString();
-            int spacing1 = 0;
-            int spacing2 = 0;
-            spacing1 = 12 - idString.Length;
-            spacing2 = 12 - fromOrTo.Length;
-            for(int i = 0; i <= 30; i++)
+            
+            for(int i = 0; i <= 25; i++)
             {
                 if (i == 2)
                 {
-                    Console.Write(idString);
+                    Console.Write(id);
                 }
                 else if (i == 9)
                 {
@@ -282,7 +277,7 @@ namespace TenmoClient.Services
                 }
                 else if (i == 25)
                 {
-                    Console.Write($"{amount:C2}");
+                    Console.Write($"{amount:C2} {isRejected}");
                 }
                 else
                 {
@@ -382,17 +377,17 @@ namespace TenmoClient.Services
         {
             Console.Clear();
             Console.WriteLine("");
-            Console.WriteLine(" ___________________       ____________ ");
-            Console.WriteLine("|                   |     |            |");
-            Console.WriteLine("|______	     _______|     |    ________|");
-            Console.WriteLine("       |    |             |   |         ");
-            Console.WriteLine("       |    |             |   |________     ______________     _______________     _______________ ");
-            Console.WriteLine("       |    |             |            |   |              |   |               |   |               |");
-            Console.WriteLine("       |    |             |    ________|   |    ______    |   |   ___   ___   |   |     _____     |");
-            Console.WriteLine("       |    |             |   |            |    |    |    |   |   | |   | |   |   |    |     |    |");
-            Console.WriteLine("       |    |             |   |________    |    |    |    |   |   | |   | |   |   |    |_____|    |");
-            Console.WriteLine("       |    |             |            |   |    |    |    |   |   | |   | |   |   |               |");
-            Console.WriteLine("       |____|             |____________|   |____|    |____|   |___| |___| |___|   |_______________|");
+            Console.WriteLine(" __________________       ____________ ");
+            Console.WriteLine("|                  |     |            |");
+            Console.WriteLine("|______	     ______|     |    ________|");
+            Console.WriteLine("       |    |            |   |         ");
+            Console.WriteLine("       |    |            |   |________     ______________     _______________     _______________ ");
+            Console.WriteLine("       |    |            |            |   |              |   |               |   |               |");
+            Console.WriteLine("       |    |            |    ________|   |    ______    |   |   ___   ___   |   |     _____     |");
+            Console.WriteLine("       |    |            |   |            |    |    |    |   |   | |   | |   |   |    |     |    |");
+            Console.WriteLine("       |    |            |   |________    |    |    |    |   |   | |   | |   |   |    |_____|    |");
+            Console.WriteLine("       |    |            |            |   |    |    |    |   |   | |   | |   |   |               |");
+            Console.WriteLine("       |____|            |____________|   |____|    |____|   |___| |___| |___|   |_______________|");
             Console.WriteLine("");
         }
     }

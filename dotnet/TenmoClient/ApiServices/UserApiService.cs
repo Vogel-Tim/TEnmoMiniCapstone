@@ -4,6 +4,7 @@ using System.Text;
 using TenmoClient.Models;
 using RestSharp;
 using TenmoClient.Services;
+using System.Threading;
 
 namespace TenmoClient.ApiServices
 {
@@ -30,7 +31,9 @@ namespace TenmoClient.ApiServices
             IRestResponse<List<ApiUser>> response = client.Get<List<ApiUser>>(request);
             if (response.ResponseStatus != ResponseStatus.Completed || !response.IsSuccessful)
             {
-                throw new Exception();
+                Console.WriteLine("An error occured fetching Users");
+                Thread.Sleep(2000);
+                return new List<ApiUser>();
             }
             else
             {

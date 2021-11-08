@@ -151,18 +151,27 @@ namespace TenmoClient
                                     case "1":
                                         if (accountApiService.GetAccount(UserService.GetUserId()).Balance >= existingTransfer.Amount)
                                         {
-                                            newTransfer = consoleService.BuildUpdatedTransfer(true, existingTransfer);
-                                            TransactionScope transaction = new TransactionScope();
-                                            if (transferApiService.Transaction(newTransfer))
+                                            try
                                             {
-                                                transferApiService.UpdateTransfer(newTransfer);
-                                                transaction.Complete();
-                                                Console.WriteLine("Transfer approved. Transaction successful!");
-                                                Thread.Sleep(2000);
+                                                newTransfer = consoleService.BuildUpdatedTransfer(true, existingTransfer);
+                                                TransactionScope transaction = new TransactionScope();
+                                                if (transferApiService.Transaction(newTransfer))
+                                                {
+                                                    transferApiService.UpdateTransfer(newTransfer);
+                                                    transaction.Complete();
+                                                    transaction.Dispose();
+                                                    Console.WriteLine("Transfer approved. Transaction successful!");
+                                                    Thread.Sleep(2000);
+                                                }
+                                                else
+                                                {
+                                                    transaction.Dispose();
+                                                }
                                             }
-                                            else
+                                            catch (TransactionException ex)
                                             {
-                                                transaction.Dispose();
+                                                Console.WriteLine(ex.Message);
+                                                Thread.Sleep(2000);
                                             }
                                         }
                                         else
@@ -199,17 +208,28 @@ namespace TenmoClient
                     Transfer transfer = consoleService.BuildTransactionSend(userTo, amount);
                     if (accountApiService.GetAccount(UserService.GetUserId()).Balance >= transfer.Amount)
                     {
-                        TransactionScope transaction = new TransactionScope();
-                        if (transferApiService.CreateTransfer(transfer) && transferApiService.Transaction(transfer))
+                        try
                         {
-                            transaction.Complete();
-                            Console.WriteLine("Transaction successfull.");
+                            TransactionScope transaction = new TransactionScope();
+                            if (transferApiService.CreateTransfer(transfer) && transferApiService.Transaction(transfer))
+                            {
+                                transaction.Complete();
+                                transaction.Dispose();
+                                Console.WriteLine("Transaction successfull.");
+                                Thread.Sleep(2000);
+                            }
+                            else
+                            {
+                                transaction.Dispose();
+                            }
+                        }
+                        catch (TransactionException ex)
+                        {
+
+                            Console.WriteLine(ex.Message);
                             Thread.Sleep(2000);
                         }
-                        else
-                        {
-                            transaction.Dispose();
-                        }
+                        
                     }
                     else
                     {
